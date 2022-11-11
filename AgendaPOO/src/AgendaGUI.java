@@ -1,22 +1,38 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 
 public class  AgendaGUI extends JFrame {
     JLabel linha1, linha2;
-    ImageIcon boloImg = new ImageIcon("./src/imagens/boloImg.jpg");
-    ImageIcon addImg = new ImageIcon("./src/imagens/addImg.jpg");
-    ImageIcon removeImg = new ImageIcon("./src/imagens/removeImg.jpg");
+    ImageIcon boloImg = new ImageIcon("src"+File.separator+"resources"+ File.separator+"imgs"+File.separator+"boloImg.jpg");
+    ImageIcon addImg = new ImageIcon("src"+File.separator+"resources"+ File.separator+"imgs"+File.separator+"addImg.jpg");
+    ImageIcon removeImg = new ImageIcon("src"+File.separator+"resources"+ File.separator+"imgs"+File.separator+"removeImg.jpg");
     JButton botaoAdicionar, botaoPesquisar, botaoRemover;
     Agenda agenda = new AgendaPOO();
     JMenuBar barraDeMenu = new JMenuBar();
+    GravadorDeContatos gravador = new GravadorDeContatos();
 
 
     public AgendaGUI(){
+
         setTitle("Agenda de Aniversários");
         setSize(800, 600);
         setLocationRelativeTo(null);
         setResizable(false);
         getContentPane().setBackground(Color.white);
+        Collection<Contato> contatos = null;
+        try {
+            contatos = gravador.recuperaContatos();
+            for (Contato c: contatos){
+                this.agenda.cadastraContato(c.getNome(), c.getDiaAniversario(), c.getMesAniversario());
+            }
+            JOptionPane.showMessageDialog(null, "Contatos recuperados com sucesso");
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Contatos não recuperados. Erro: "+e.getMessage());
+            e.printStackTrace();
+        }
 
         linha1 = new JLabel("Minha Agenda de Aniversários", JLabel.CENTER);
         linha1.setForeground(Color.red);
@@ -39,9 +55,19 @@ public class  AgendaGUI extends JFrame {
         JMenuItem menuPesquisarAniversariante = new JMenuItem("Pesquisar Aniversariante");
         menuPesquisar.add(menuPesquisarAniversariante);
         menuPesquisarAniversariante.addActionListener(new AgendaSearchController(agenda, this));
-        
+
         barraDeMenu.add(menuPesquisar);
+
+        JMenu menuSalvar = new JMenu("Salvar");
+        JMenuItem menuSalvarDados = new JMenuItem("Salvar dados");
+        menuSalvar.add(menuSalvarDados);
+        menuSalvarDados.addActionListener(new AgendaSaveController(agenda, this, gravador));
+
+        barraDeMenu.add(menuSalvar);
+
         setJMenuBar(barraDeMenu);
+        File arquivo = new File(".");
+        System.out.println("===>"+arquivo.getAbsolutePath());
 
     }
 

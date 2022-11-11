@@ -9,7 +9,10 @@ public class AgendaPOO implements Agenda{
     public AgendaPOO(){
         this.contatos = new HashMap<>();
     }
-
+    public Collection<Contato> getContatos(){
+        return this.contatos.values();
+    }
+    
     @Override
     public boolean cadastraContato(String nome, int dia, int mes){
         if(!contatos.containsKey(nome)){

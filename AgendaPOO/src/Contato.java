@@ -1,4 +1,6 @@
-public class Contato{
+import java.io.Serializable;
+
+public class Contato implements Serializable{
     private String nome;
     private int dia;
     private int mes;
@@ -14,7 +16,7 @@ public class Contato{
     }
 
     public String toString(){
-        return "Dia: " + dia + " Mês: " + mes;
+        return "Aniversariante de Nome:" + nome + "Dia: " + dia + " Mês: " + mes;
     }
 
     public String getNome(){
